@@ -1,9 +1,43 @@
 {
-  "name": "demo-repo",
+  "name": "command-tracker-frontend",
   "version": "0.2.0",
+  "type": "module",
   "description": "A sample package.json",
-  "dependencies": {
-    "@primer/css": "17.0.1"
+  "scripts": {
+    "lint": "eslint \"./**/*.{js,jsx}\" --fix",
+    "prepare": "husky install",
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
   },
-  "license": "MIT"
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@commitlint/config-conventional": "^19.8.1",
+    "nodemon": "^3.1.10",
+    "commitlint": "^19.8.1",
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-prettier": "^5.4.1",
+    "globals": "^16.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.0",
+    "prettier": "^3.5.3"
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  }
 }
