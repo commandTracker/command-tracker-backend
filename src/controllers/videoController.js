@@ -2,11 +2,11 @@ import { HTTP_STATUS, MESSAGES } from "../config/constants.js";
 import { getYoutubeVideo, saveVideoToGcs } from "../services/videoService.js";
 
 const uploadVideoRequests = async (req, res, next) => {
-  const youtubeUrl = req.body.youtubeUrl;
+  const { youtubeUrl } = req.body;
 
   try {
     const videoStream = await getYoutubeVideo(youtubeUrl);
-    const outputFileName = new Date().toISOString() + "video.mp4";
+    const outputFileName = `${new Date().toISOString()}video.mp4`;
     const signedUrl = await saveVideoToGcs(videoStream, outputFileName);
 
     res.json({
@@ -19,4 +19,4 @@ const uploadVideoRequests = async (req, res, next) => {
   }
 };
 
-export { uploadVideoRequests };
+export default uploadVideoRequests;

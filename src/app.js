@@ -1,7 +1,8 @@
 import express from "express";
-import videoRoutes from "./routes/videoRoutes.js";
-import env from "./config/env.js";
+
 import { HTTP_STATUS, MESSAGES } from "./config/constants.js";
+import env from "./config/env.js";
+import videoRoutes from "./routes/videoRoutes.js";
 
 const app = express();
 
