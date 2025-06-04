@@ -4,7 +4,8 @@
   "type": "module",
   "description": "A sample package.json",
   "scripts": {
-    "lint": "eslint \"./**/*.{js,jsx}\" --fix",
+    "lint": "eslint \"./**/*.{js,jsx}\"",
+    "fix": "eslint \"./**/*.{js,jsx}\" --fix",
     "prepare": "husky install",
     "start": "node src/server.js",
     "dev": "nodemon src/server.js"
