@@ -1,5 +1,5 @@
 {
-  "name": "command-tracker-frontend",
+  "name": "command-tracker-backend",
   "version": "0.2.0",
   "type": "module",
   "description": "A sample package.json",
@@ -10,6 +10,7 @@
     "dev": "nodemon src/server.js"
   },
   "dependencies": {
+    "@distube/ytdl-core": "^4.16.11",
     "dotenv": "^16.5.0",
     "express": "^5.1.0"
   },
