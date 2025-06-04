@@ -1,5 +1,6 @@
 import amqp from "amqplib";
-import config from "../config/env.js";
+
+import config from "./env.js";
 
 let connection = null;
 let channel = null;
@@ -9,7 +10,7 @@ const connectRabbitMQ = async () => {
     connection = await amqp.connect(config.rabbitmqUrl);
     channel = await connection.createChannel();
 
-    connection.on("error", (err) => {
+    connection.on("error", () => {
       connection = null;
       channel = null;
     });
@@ -20,7 +21,7 @@ const connectRabbitMQ = async () => {
 
       setTimeout(connectRabbitMQ, 5000);
     });
-  } catch (err) {
+  } catch {
     setTimeout(connectRabbitMQ, 5000);
   }
 };
