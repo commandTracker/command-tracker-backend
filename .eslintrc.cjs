@@ -3,16 +3,14 @@ module.exports = {
     node: true,
     es2021: true,
   },
-  extends: [
-    "airbnb-base",
-    "plugin:prettier/recommended",
-  ],
+  extends: ["airbnb-base", "plugin:prettier/recommended"],
   plugins: ["prettier", "import"],
   parserOptions: {
     ecmaVersion: "latest",
     sourceType: "module",
   },
   rules: {
+    "no-return-await": "off",
     "no-console": "error",
     "no-unused-vars": [
       "error",
@@ -23,7 +21,14 @@ module.exports = {
     "import/order": [
       "error",
       {
-        groups: ["builtin", "external", "internal", "parent", "sibling", "index"],
+        groups: [
+          "builtin",
+          "external",
+          "internal",
+          "parent",
+          "sibling",
+          "index",
+        ],
         alphabetize: { order: "asc", caseInsensitive: true },
         "newlines-between": "always",
       },
