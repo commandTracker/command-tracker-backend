@@ -6,16 +6,15 @@ const uploadVideoRequests = async (req, res, next) => {
 
   try {
     const videoStream = await getYoutubeVideo(youtubeUrl);
-    const outputFileName = `${new Date().toISOString()}video.mp4`;
-    const signedUrl = await saveVideoToGcs(videoStream, outputFileName);
+    const signedUrl = await saveVideoToGcs(videoStream, req.videoId);
 
-    res.json({
+    res.status(HTTP_STATUS.CREATED).json({
       status: HTTP_STATUS.CREATED,
       message: MESSAGES.SUCCESS.VIDEO_LOAD,
       download_url: signedUrl,
     });
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    next(error);
   }
 };
 
