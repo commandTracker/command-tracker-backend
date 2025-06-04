@@ -2,6 +2,7 @@ const constants = {
   MESSAGES: {
     SUCCESS: {
       VIDEO_LOAD: "영상 불러오기에 성공하였습니다.",
+      VIDEO_SAVED: "영상 저장에 성공하였습니다.",
       VIDEO_REQUEST: "커맨드 분석 요청 성공",
       VIDEO_ANALYSIS: "커맨드 분석 성공",
     },
@@ -13,6 +14,7 @@ const constants = {
       VIDEO_ANALYSIS: "영상 분석에 실패했습니다.",
     },
   },
+
   HTTP_STATUS: {
     OK: 200,
     CREATED: 201,
