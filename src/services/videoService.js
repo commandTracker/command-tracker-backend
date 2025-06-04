@@ -2,6 +2,7 @@ import ytdl from "@distube/ytdl-core";
 import { Storage } from "@google-cloud/storage";
 
 import env from "../config/env.js";
+import generateSignedUrl from "../utils/generateSignedUrl.js";
 
 const getYoutubeVideo = async (youtubeUrl) => {
   const videoStream = ytdl(youtubeUrl, { quality: "highest" });
@@ -30,6 +31,8 @@ const saveVideoToGcs = async (videoStream, fileOutputName) => {
         reject(err);
       });
   });
+
+  return await generateSignedUrl(storage, fileOutputName);
 };
 
 export { getYoutubeVideo, saveVideoToGcs };
