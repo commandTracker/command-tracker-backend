@@ -1,8 +1,8 @@
 import createError from "http-errors";
 
-import { MESSAGES, REQUIRED_FIELDS } from "../config/constants.js";
+import { MESSAGES } from "../config/constants.js";
 
-const validateField = (reqBody) => {
+const validateReqBody = (reqBody) => {
   if (reqBody === undefined) {
     const error = new createError.BadRequest(
       MESSAGES.ERROR.MISSING_REQUIRED_FIELD
@@ -11,8 +11,10 @@ const validateField = (reqBody) => {
 
     throw error;
   }
+};
 
-  REQUIRED_FIELDS.VIDEO_UPLOAD_REQUEST.forEach((field) => {
+const validateFields = (reqBody, requiredFields) => {
+  requiredFields.forEach((field) => {
     if (reqBody[field] === undefined || reqBody[field].trim() === "") {
       const error = new createError.BadRequest(
         MESSAGES.ERROR.MISSING_REQUIRED_FIELD
@@ -24,4 +26,4 @@ const validateField = (reqBody) => {
   });
 };
 
-export default validateField;
+export { validateReqBody, validateFields };

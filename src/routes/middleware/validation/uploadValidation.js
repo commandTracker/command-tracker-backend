@@ -1,8 +1,8 @@
 import ytdl from "@distube/ytdl-core";
 import createError from "http-errors";
 
-import { MESSAGES } from "../../../config/constants.js";
-import validateField from "../../../utils/validation.js";
+import { MESSAGES, REQUIRED_FIELDS } from "../../../config/constants.js";
+import { validateReqBody, validateFields } from "../../../utils/validation.js";
 
 const validateMetadata = (metaData) => {
   const { isLiveContent, isShortsEligible } = metaData;
@@ -16,7 +16,8 @@ const validateMetadata = (metaData) => {
 
 const validateUploadUrl = async (req, res, next) => {
   try {
-    validateField(req.body);
+    validateReqBody(req.body);
+    validateFields(req.body, REQUIRED_FIELDS.VIDEO_UPLOAD_REQUEST);
 
     const { youtubeUrl } = req.body;
     const isValid = ytdl.validateURL(youtubeUrl);
