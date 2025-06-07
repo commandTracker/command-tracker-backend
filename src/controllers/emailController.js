@@ -1,16 +1,21 @@
 /* eslint-disable consistent-return */
+import { MESSAGES, HTTP_STATUS } from "../../config/constants.js";
 import { publishToQueue } from "../utils/rabbitmqService.js";
 
 const notifySubmissionSuccess = async (req, res, next) => {
   try {
-    const downloadLink = "https://www.example.com";
+    const { to, downloadLink } = req.body;
     const obj = {
-      to: "chosungkyung1601@gmail.com",
-      subject: "test email",
+      to,
+      subject: "Command Tracker",
       downloadLink,
     };
     await publishToQueue("email_queue", obj);
-    return res.status(200).json({ message: "메일이 발송 되었습니다." });
+    res.status(HTTP_STATUS.OK).json({
+      status: HTTP_STATUS.OK,
+      message: MESSAGES.SUCCESS.VIDEO_REQUEST,
+      email: to,
+    });
   } catch (err) {
     next(err);
   }
