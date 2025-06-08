@@ -1,14 +1,11 @@
 import express from "express";
 
 import emailRoutes from "./routes/emailRoutes.js";
-import { consumeEmailQueue } from "./utils/rabbitmqService.js";
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-consumeEmailQueue();
 
 app.use("/", emailRoutes);
 
