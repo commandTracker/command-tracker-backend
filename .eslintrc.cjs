@@ -11,6 +11,7 @@ module.exports = {
   },
   rules: {
     "no-return-await": "off",
+    "no-useless-catch": "off",
     "no-console": "error",
     "no-unused-vars": [
       "error",

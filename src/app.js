@@ -2,6 +2,7 @@ import express from "express";
 
 import { HTTP_STATUS, MESSAGES } from "./config/constants.js";
 import env from "./config/env.js";
+import emailRoutes from "./routes/emailRoutes.js";
 import videoRoutes from "./routes/videoRoutes.js";
 
 const app = express();
@@ -9,6 +10,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(`${env.API_PREFIX}/`, emailRoutes);
 app.use(`${env.API_PREFIX}/video`, videoRoutes);
 
 app.use((req, res, next) => {
