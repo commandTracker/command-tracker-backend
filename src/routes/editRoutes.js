@@ -1,7 +1,8 @@
 import express from "express";
 
-import editController from "./controllers/editController.js";
-import validateEditRequest from "./validation/editValidator.js";
+import editController from "../controllers/editController.js";
+
+import validateEditRequest from "./middleware/validation/editValidation.js";
 
 const router = express.Router();
 
