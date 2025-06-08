@@ -46,4 +46,8 @@ const REQUIRED_FIELDS = {
   VIDEO_EDIT_REQUEST: ["trimStart", "trimEnd", "email", "side"],
 };
 
-export { MESSAGES, HTTP_STATUS, GCS, REQUIRED_FIELDS };
+const REGEX_PATTERNS = {
+  EMAIL: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i,
+};
+
+export { MESSAGES, HTTP_STATUS, GCS, REQUIRED_FIELDS, REGEX_PATTERNS };

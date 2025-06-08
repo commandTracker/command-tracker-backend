@@ -3,6 +3,7 @@ import createError from "http-errors";
 import {
   HTTP_STATUS,
   MESSAGES,
+  REGEX_PATTERNS,
   REQUIRED_FIELDS,
 } from "../../../config/constants.js";
 import { validateReqBody, validateFields } from "../../../utils/validation.js";
@@ -12,7 +13,7 @@ const validateEditRequest = (req, _res, next) => {
     validateReqBody(req.body);
     validateFields(req.body, REQUIRED_FIELDS.VIDEO_EDIT_REQUEST);
 
-    const pattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
+    const pattern = REGEX_PATTERNS.EMAIL;
 
     const { trimStart, trimEnd, email } = req.body;
 
