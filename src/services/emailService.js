@@ -35,13 +35,13 @@ const readEmailTemplate = async (data) => {
   }
 };
 
-const sendEmail = async ({ to, subject, downloadLink }) => {
+const sendEmail = async ({ email, downloadLink }) => {
   try {
     const html = await readEmailTemplate({ downloadLink });
     const mailOptions = {
       from: config.email_user,
-      to,
-      subject,
+      to: email,
+      subject: "Command Tracker",
       html,
     };
 
