@@ -1,20 +1,20 @@
 import createError from "http-errors";
 
-import { HTTP_STATUS, MESSAGES } from "../../config/constants.js";
-import transVideoAndUpload from "../../services/transVideoService.js";
-import { publishToQueue } from "../../utils/rabbitmqService.js";
+import { HTTP_STATUS, MESSAGES } from "../config/constants.js";
+import transVideoAndUpload from "../services/transVideoService.js";
+import { publishToQueue } from "../utils/rabbitmqService.js";
 
 const editController = async (req, res, next) => {
-  const { videoSrc, trim, email, side } = req.body;
+  const { videoId, trim, email, selectedCharacter } = req.body;
   const [start, end] = trim.map(Number);
 
   try {
     const message = await transVideoAndUpload({
-      videoSrc,
+      videoId,
       start,
       end,
       email,
-      side,
+      selectedCharacter,
     });
 
     const queue = "analyze_queue";
