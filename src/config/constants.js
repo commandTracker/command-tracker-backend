@@ -43,6 +43,7 @@ const GCS = {
 
 const REQUIRED_FIELDS = {
   VIDEO_UPLOAD_REQUEST: ["youtubeUrl"],
+  VIDEO_EDIT_REQUEST: ["trimStart", "trimEnd", "email", "side"],
 };
 
 export { MESSAGES, HTTP_STATUS, GCS, REQUIRED_FIELDS };
