@@ -1,20 +1,23 @@
 {
-  "name": "command-tracker-frontend",
+  "name": "command-tracker-backend",
   "version": "0.2.0",
   "type": "module",
   "description": "A sample package.json",
   "scripts": {
-    "lint": "eslint \"./**/*.{js,jsx}\" --fix",
+    "lint": "eslint \"./**/*.{js,jsx}\"",
+    "fix": "eslint \"./**/*.{js,jsx}\" --fix",
     "prepare": "husky install",
     "start": "node src/server.js",
     "dev": "nodemon src/server.js"
   },
   "dependencies": {
-    "amqplib": "^0.10.8",
+    "@distube/ytdl-core": "^4.16.11",
+    "@google-cloud/storage": "^7.16.0",
     "dotenv": "^16.5.0",
-    "ejs": "^3.1.10",
     "express": "^5.1.0",
     "http-errors": "^2.0.0",
+    "amqplib": "^0.10.8",
+    "ejs": "^3.1.10",
     "nodemailer": "^7.0.3"
   },
   "license": "MIT",

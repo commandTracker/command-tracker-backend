@@ -6,8 +6,8 @@ import ejs from "ejs";
 import createError from "http-errors";
 import nodemailer from "nodemailer";
 
-import { HTTP_STATUS, MESSAGES } from "../../config/constants.js";
-import config from "../../config/env.js";
+import { HTTP_STATUS, MESSAGES } from "../config/constants.js";
+import config from "../config/env.js";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);

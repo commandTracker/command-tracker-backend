@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import amqp from "amqplib";
 import createError from "http-errors";
 

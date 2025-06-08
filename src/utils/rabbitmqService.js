@@ -1,7 +1,7 @@
 import createError from "http-errors";
 
-import { MESSAGES, HTTP_STATUS } from "../../config/constants.js";
-import { getChannel } from "../../config/rabbitmq.js";
+import { MESSAGES, HTTP_STATUS } from "../config/constants.js";
+import { getChannel } from "../config/rabbitmq.js";
 import { sendEmail } from "../services/emailService.js";
 
 const publishToQueue = async (queue, message) => {

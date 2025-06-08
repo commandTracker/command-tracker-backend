@@ -1,5 +1,5 @@
 /* eslint-disable consistent-return */
-import { MESSAGES, HTTP_STATUS } from "../../config/constants.js";
+import { MESSAGES, HTTP_STATUS } from "../config/constants.js";
 import { publishToQueue } from "../utils/rabbitmqService.js";
 
 const notifySubmissionSuccess = async (req, res, next) => {

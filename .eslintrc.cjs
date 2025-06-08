@@ -10,6 +10,7 @@ module.exports = {
     sourceType: "module",
   },
   rules: {
+    "no-return-await": "off",
     "no-useless-catch": "off",
     "no-console": "error",
     "no-unused-vars": [
