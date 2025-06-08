@@ -1,22 +1,19 @@
 import { PassThrough } from "stream";
 
-import { Storage } from "@google-cloud/storage";
 import ffmpeg from "fluent-ffmpeg";
+import createError from "http-errors";
 
-import config from "../config/env.js";
+import { MESSAGES } from "../config/constants.js";
+import { bucket } from "../config/gcs.js";
 
-const storage = new Storage();
-const bucketName = config.gcs_bucket;
-const bucket = storage.bucket(bucketName);
-
-const transVideoAndUpload = ({ videoSrc, start, end, side, email }) => {
+const transVideoAndUpload = ({ videoId, start, end, side, email }) => {
   return new Promise((resolve, reject) => {
-    const readStream = bucket.file(videoSrc).createReadStream();
+    const readStream = bucket.file(videoId).createReadStream();
     const fileName = `${email}${Date.now()}`;
     const message = {
       email,
-      side,
-      fileName,
+      file_name: fileName,
+      selected_character: side,
     };
     const writeStream = bucket.file(fileName).createWriteStream({
       resumable: false,
@@ -30,10 +27,15 @@ const transVideoAndUpload = ({ videoSrc, start, end, side, email }) => {
       .setStartTime(start)
       .setDuration(end - start)
       .format("mp4")
-      .on("error", (err) => {
+      .on("error", () => {
         readStream.destroy();
         writeStream.destroy();
-        reject(err);
+
+        const error = createError.InternalServerError(
+          MESSAGES.ERROR.FAILED_READ_VIDEO
+        );
+
+        reject(error);
       })
       .on("end", () => ffmpegStream.end())
       .pipe(ffmpegStream);
@@ -41,7 +43,12 @@ const transVideoAndUpload = ({ videoSrc, start, end, side, email }) => {
     ffmpegStream
       .pipe(writeStream)
       .on("finish", () => resolve(message))
-      .on("error", reject);
+      .on("error", () => {
+        const error = createError.InternalServerError(
+          MESSAGES.ERROR.FAILED_SAVE_VIDEO
+        );
+        reject(error);
+      });
   });
 };
 
