@@ -1,9 +1,13 @@
 import express from "express";
 
+import emailRoutes from "./routes/emailRoutes.js";
+
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use("/", emailRoutes);
 
 app.use((req, res, next) => {
   res.status(404).json({ message: "아무것도 없습니다." });
