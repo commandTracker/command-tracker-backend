@@ -20,15 +20,13 @@ const editController = async (req, res, next) => {
 
     await publishToQueue(queue, message);
 
-    return res.status(HTTP_STATUS.OK).json({
+    res.status(HTTP_STATUS.CREATED).json({
       status: HTTP_STATUS.CREATED,
       message: MESSAGES.SUCCESS.VIDEO_REQUEST,
       email,
     });
   } catch (err) {
-    return next(
-      createError(HTTP_STATUS.SERVER_ERROR, MESSAGES.ERROR.SERVER_ERROR)
-    );
+    next(createError(HTTP_STATUS.SERVER_ERROR, MESSAGES.ERROR.SERVER_ERROR));
   }
 };
 
