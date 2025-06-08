@@ -13,6 +13,7 @@ const MESSAGES = {
     INVALID_EMAIL: "잘못된 이메일 형식입니다.",
     VIDEO_NOT_FOUND: "해당 영상이 존재하지 않습니다.",
     VIDEO_ANALYSIS: "영상 분석에 실패했습니다.",
+    FAILED_SAVE_VIDEO: "비디오 저장에 실패했습니다.",
 
     INACCESSIBLE_VIDEO: "접근이 제한된 영상입니다.",
     INVALID_VIDEO_TYPE: "지원하지 않는 유형의 영상입니다.",

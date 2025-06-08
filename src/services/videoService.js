@@ -1,5 +1,7 @@
 import ytdl from "@distube/ytdl-core";
+import createError from "http-errors";
 
+import { MESSAGES } from "../config/constants.js";
 import env from "../config/env.js";
 import { storage, bucket } from "../config/gcs.js";
 import generateSignedUrl from "../utils/generateSignedUrl.js";
@@ -17,11 +19,13 @@ const saveVideoToGcs = async (videoStream, videoId) => {
   await new Promise((resolve, reject) => {
     videoStream
       .pipe(file.createWriteStream({ contentType: "video/mp4" }))
-      .on("finish", () => {
-        resolve();
-      })
-      .on("error", (err) => {
-        reject(err);
+      .on("finish", () => resolve())
+      .on("error", () => {
+        const error = new createError.InternalServerError(
+          MESSAGES.ERROR.FAILED_SAVE_VIDEO
+        );
+
+        reject(error);
       });
   });
 
