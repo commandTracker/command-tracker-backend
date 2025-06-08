@@ -45,16 +45,15 @@ const consumeEmailQueue = async () => {
 
     await channel.assertQueue(queue, { durable: true });
     channel.consume(queue, async (msg) => {
-      if (msg !== null) {
-        const { to, subject, downloadLink } = JSON.parse(
-          msg.content.toString()
-        );
-        try {
-          await sendEmail({ to, subject, downloadLink });
-          channel.ack(msg);
-        } catch {
-          channel.nack(msg, false, false);
-        }
+      if (!msg) {
+        return;
+      }
+      const { to, subject, downloadLink } = JSON.parse(msg.content.toString());
+      try {
+        await sendEmail({ to, subject, downloadLink });
+        channel.ack(msg);
+      } catch {
+        channel.nack(msg, false, false);
       }
     });
   } catch (err) {
