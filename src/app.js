@@ -4,7 +4,7 @@ import createError from "http-errors";
 
 import { HTTP_STATUS, MESSAGES } from "./config/constants.js";
 import env from "./config/env.js";
-import editRoutes from "./routes/edit.js";
+import editRoutes from "./routes/editRoutes.js";
 import emailRoutes from "./routes/emailRoutes.js";
 import videoRoutes from "./routes/videoRoutes.js";
 
