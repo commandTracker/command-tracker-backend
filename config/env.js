@@ -6,7 +6,7 @@ const config = {
   port: process.env.PORT || 3000,
   rabbitmqUrl: process.env.RABBITMQ_URL,
   node_env: process.env.NODE_ENV || "development",
-  fastapiUrl: process.env.FASTAPI_URL || "http://localhost:8000",
+  gcs_bucket: process.env.GCS_BUCKET || "test_bucket",
 };
 
 export default config;
