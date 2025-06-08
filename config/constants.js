@@ -12,6 +12,7 @@ const MESSAGES = {
     INVALID_EMAIL: "잘못된 이메일 형식입니다.",
     VIDEO_NOT_FOUND: "해당 영상이 존재하지 않습니다.",
     VIDEO_ANALYSIS: "영상 분석에 실패했습니다.",
+    INVALID_TRIM: "trim 범위가 잘못되었습니다.",
   },
 };
 
