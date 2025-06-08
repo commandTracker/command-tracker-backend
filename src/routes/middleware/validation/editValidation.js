@@ -1,7 +1,6 @@
 import createError from "http-errors";
 
 import {
-  HTTP_STATUS,
   MESSAGES,
   REGEX_PATTERNS,
   REQUIRED_FIELDS,
@@ -18,11 +17,11 @@ const validateEditRequest = (req, _res, next) => {
     const { trimStart, trimEnd, email } = req.body;
 
     if (Number(trimStart) >= Number(trimEnd)) {
-      throw createError(HTTP_STATUS.BAD_REQUEST, MESSAGES.ERROR.INVALID_TRIM);
+      throw createError.BadRequest(MESSAGES.ERROR.INVALID_TRIM);
     }
 
     if (pattern.test(email) === false) {
-      throw createError(HTTP_STATUS.BAD_REQUEST, MESSAGES.ERROR.INVALID_EMAIL);
+      throw createError.BadRequest(MESSAGES.ERROR.INVALID_EMAIL);
     }
 
     next();

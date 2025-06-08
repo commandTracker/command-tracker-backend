@@ -1,16 +1,13 @@
 import createError from "http-errors";
 
-import { MESSAGES, HTTP_STATUS } from "../config/constants.js";
+import { MESSAGES } from "../config/constants.js";
 import { getChannel } from "../config/rabbitmq.js";
 import { sendEmail } from "../services/emailService.js";
 
 const publishToQueue = async (queue, message) => {
   try {
     if (!queue || !message) {
-      throw createError(
-        HTTP_STATUS.BAD_REQUEST,
-        MESSAGES.ERROR.MISSING_REQUIRED_FIELD
-      );
+      throw createError(MESSAGES.ERROR.MISSING_REQUIRED_FIELD);
     }
 
     const channel = getChannel();
@@ -26,8 +23,7 @@ const publishToQueue = async (queue, message) => {
     );
 
     if (!success) {
-      throw createError(
-        HTTP_STATUS.SERVER_ERROR,
+      throw createError.InternalServerError(
         MESSAGES.ERROR.FAILED_PUBLISH_MESSAGE
       );
     }
@@ -58,7 +54,7 @@ const consumeEmailQueue = async () => {
       }
     });
   } catch (err) {
-    throw createError(HTTP_STATUS.SERVER_ERROR, MESSAGES.ERROR.SERVER_ERROR);
+    throw createError.InternalServerError(MESSAGES.ERROR.SERVER_ERROR);
   }
 };
 

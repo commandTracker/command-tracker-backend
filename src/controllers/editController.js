@@ -26,7 +26,7 @@ const editController = async (req, res, next) => {
       email,
     });
   } catch (err) {
-    next(createError(HTTP_STATUS.SERVER_ERROR, MESSAGES.ERROR.SERVER_ERROR));
+    next(createError.InternalServerError(MESSAGES.ERROR.SERVER_ERROR));
   }
 };
 

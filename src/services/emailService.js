@@ -6,7 +6,7 @@ import ejs from "ejs";
 import createError from "http-errors";
 import nodemailer from "nodemailer";
 
-import { HTTP_STATUS, MESSAGES } from "../config/constants.js";
+import { MESSAGES } from "../config/constants.js";
 import config from "../config/env.js";
 
 const filename = fileURLToPath(import.meta.url);
@@ -28,10 +28,7 @@ const readEmailTemplate = async (data) => {
 
     return htmlContent;
   } catch (err) {
-    throw createError(
-      HTTP_STATUS.SERVER_ERROR,
-      MESSAGES.ERROR.FAILED_READ_TEMPLATE
-    );
+    throw createError.InternalServerError(MESSAGES.ERROR.FAILED_READ_TEMPLATE);
   }
 };
 
@@ -47,7 +44,7 @@ const sendEmail = async ({ to, subject, downloadLink }) => {
 
     await transporter.sendMail(mailOptions);
   } catch (err) {
-    throw createError(HTTP_STATUS.SERVER_ERROR, MESSAGES.ERROR.SERVER_ERROR);
+    throw createError.InternalServerError(MESSAGES.ERROR.SERVER_ERROR);
   }
 };
 
