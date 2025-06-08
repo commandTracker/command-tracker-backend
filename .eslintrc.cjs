@@ -10,6 +10,7 @@ module.exports = {
     sourceType: "module",
   },
   rules: {
+    "consistent-return": "off",
     "no-return-await": "off",
     "no-useless-catch": "off",
     "no-console": "error",
