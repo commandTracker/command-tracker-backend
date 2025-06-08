@@ -10,7 +10,9 @@ const notifySubmissionSuccess = async (req, res, next) => {
       subject: "Command Tracker",
       downloadLink,
     };
+
     await publishToQueue("email_queue", obj);
+
     res.status(HTTP_STATUS.OK).json({
       status: HTTP_STATUS.OK,
       message: MESSAGES.SUCCESS.VIDEO_REQUEST,

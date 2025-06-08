@@ -25,6 +25,7 @@ const readEmailTemplate = async (data) => {
     const filePath = path.join(dirname, "../views/emailTemplate.ejs");
     const template = await fs.readFile(filePath, "utf-8");
     const htmlContent = ejs.render(template, data);
+
     return htmlContent;
   } catch (err) {
     throw createError(
@@ -43,6 +44,7 @@ const sendEmail = async ({ to, subject, downloadLink }) => {
       subject,
       html,
     };
+
     await transporter.sendMail(mailOptions);
   } catch (err) {
     throw createError(HTTP_STATUS.SERVER_ERROR, MESSAGES.ERROR.SERVER_ERROR);
