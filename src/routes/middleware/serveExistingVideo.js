@@ -19,6 +19,7 @@ const serveExistingVideo = async (req, res, next) => {
       status: HTTP_STATUS.OK,
       message: MESSAGES.SUCCESS.VIDEO_LOAD,
       download_url: signedUrl,
+      video_id: videoId,
     });
   } else {
     req.videoId = videoId;

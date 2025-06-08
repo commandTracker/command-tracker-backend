@@ -1,3 +1,5 @@
+import ytdl from "@distube/ytdl-core";
+
 import { HTTP_STATUS, MESSAGES } from "../config/constants.js";
 import { getYoutubeVideo, saveVideoToGcs } from "../services/videoService.js";
 
@@ -7,11 +9,13 @@ const uploadVideoRequests = async (req, res, next) => {
   try {
     const videoStream = await getYoutubeVideo(youtubeUrl);
     const signedUrl = await saveVideoToGcs(videoStream, req.videoId);
+    const videoId = ytdl.getURLVideoID(youtubeUrl);
 
     res.status(HTTP_STATUS.CREATED).json({
       status: HTTP_STATUS.CREATED,
       message: MESSAGES.SUCCESS.VIDEO_LOAD,
       download_url: signedUrl,
+      video_id: videoId,
     });
   } catch (error) {
     next(error);
