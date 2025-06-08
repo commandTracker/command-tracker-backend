@@ -1,8 +1,7 @@
-import amqp from "amqplib";
 import createError from "http-errors";
 
 import { MESSAGES, HTTP_STATUS } from "../../config/constants.js";
-import config from "../../config/env.js";
+import { getChannel } from "../../config/rabbitmq.js";
 import { sendEmail } from "../services/emailService.js";
 
 const publishToQueue = async (queue, message) => {
@@ -14,8 +13,8 @@ const publishToQueue = async (queue, message) => {
       );
     }
 
-    const connection = await amqp.connect(config.rabbitmqUrl);
-    const channel = await connection.createChannel();
+    const channel = getChannel();
+
     await channel.assertQueue(queue, { durable: true });
 
     const success = channel.sendToQueue(
@@ -40,15 +39,17 @@ const publishToQueue = async (queue, message) => {
 const consumeEmailQueue = async () => {
   const queue = "email_queue";
   try {
-    const connection = await amqp.connect(config.rabbitmqUrl);
-    const channel = await connection.createChannel();
+    const channel = getChannel();
 
     await channel.assertQueue(queue, { durable: true });
+
     channel.consume(queue, async (msg) => {
       if (!msg) {
         return;
       }
+
       const { to, subject, downloadLink } = JSON.parse(msg.content.toString());
+
       try {
         await sendEmail({ to, subject, downloadLink });
         channel.ack(msg);
@@ -57,7 +58,7 @@ const consumeEmailQueue = async () => {
       }
     });
   } catch (err) {
-    throw createError(HTTP_STATUS.SERVER_ERROR, err.message);
+    throw createError(HTTP_STATUS.SERVER_ERROR, MESSAGES.ERROR.SERVER_ERROR);
   }
 };
 
