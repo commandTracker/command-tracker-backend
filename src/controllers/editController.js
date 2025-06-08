@@ -5,14 +5,13 @@ import transVideoAndUpload from "../services/transVideoService.js";
 import { publishToQueue } from "../utils/rabbitmqService.js";
 
 const editController = async (req, res, next) => {
-  const { videoId, trim, email, selectedCharacter } = req.body;
-  const [start, end] = trim.map(Number);
+  const { videoId, trimStart, trimEnd, email, selectedCharacter } = req.body;
 
   try {
     const message = await transVideoAndUpload({
       videoId,
-      start,
-      end,
+      trimStart,
+      trimEnd,
       email,
       selectedCharacter,
     });
