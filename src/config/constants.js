@@ -43,7 +43,7 @@ const GCS = {
 
 const REQUIRED_FIELDS = {
   VIDEO_UPLOAD_REQUEST: ["youtubeUrl"],
-  VIDEO_EDIT_REQUEST: ["trimStart", "trimEnd", "email", "side"],
+  VIDEO_EDIT_REQUEST: ["trimStart", "trimEnd", "email", "selectedCharacter"],
 };
 
 const REGEX_PATTERNS = {
