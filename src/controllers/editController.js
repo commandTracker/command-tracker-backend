@@ -1,5 +1,3 @@
-import createError from "http-errors";
-
 import { HTTP_STATUS, MESSAGES } from "../config/constants.js";
 import transVideoAndUpload from "../services/transVideoService.js";
 import { publishToQueue } from "../utils/rabbitmqService.js";
@@ -26,7 +24,7 @@ const editController = async (req, res, next) => {
       email,
     });
   } catch (err) {
-    next(createError.InternalServerError(MESSAGES.ERROR.SERVER_ERROR));
+    next(err);
   }
 };
 
