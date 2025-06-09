@@ -20,11 +20,18 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const readEmailTemplate = async (data) => {
+const readEmailTemplate = async ({ message, url }) => {
   try {
+    if (url === "") {
+      const filePath = path.join(dirname, "../views/errorTemplate.ejs");
+      const template = await fs.readFile(filePath, "utf-8");
+      const htmlContent = ejs.render(template, { message });
+
+      return htmlContent;
+    }
     const filePath = path.join(dirname, "../views/emailTemplate.ejs");
     const template = await fs.readFile(filePath, "utf-8");
-    const htmlContent = ejs.render(template, data);
+    const htmlContent = ejs.render(template, { message, url });
 
     return htmlContent;
   } catch (err) {
@@ -32,9 +39,9 @@ const readEmailTemplate = async (data) => {
   }
 };
 
-const sendEmail = async ({ email, downloadLink }) => {
+const sendEmail = async ({ email, message, url }) => {
   try {
-    const html = await readEmailTemplate({ downloadLink });
+    const html = await readEmailTemplate({ message, url });
     const mailOptions = {
       from: config.email_user,
       to: email,

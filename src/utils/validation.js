@@ -15,7 +15,10 @@ const validateReqBody = (reqBody) => {
 
 const validateFields = (reqBody, requiredFields) => {
   requiredFields.forEach((field) => {
-    if (reqBody[field] === undefined || reqBody[field].trim() === "") {
+    if (
+      reqBody[field] === undefined ||
+      (typeof reqBody[field] === "string" && reqBody[field].trim() === "")
+    ) {
       const error = new createError.BadRequest(
         MESSAGES.ERROR.MISSING_REQUIRED_FIELD
       );
