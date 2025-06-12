@@ -1,4 +1,4 @@
-import ytdl from "@distube/ytdl-core";
+import ytdl from "@nuclearplayer/ytdl-core";
 import createError from "http-errors";
 
 import { MESSAGES } from "../config/constants.js";
