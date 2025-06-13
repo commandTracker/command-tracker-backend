@@ -7,7 +7,7 @@ import { sendEmail } from "../services/emailService.js";
 const publishToQueue = async (queue, message) => {
   try {
     if (!queue || !message) {
-      throw createError(MESSAGES.ERROR.MISSING_REQUIRED_FIELD);
+      throw createError(MESSAGES.ERROR.MISSING_MESSAGE);
     }
 
     const channel = getChannel();
