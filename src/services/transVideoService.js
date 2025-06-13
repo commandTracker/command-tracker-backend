@@ -1,8 +1,9 @@
-import fs from "fs";
+import { unlink } from "fs/promises";
+import { tmpdir } from "os";
+import path from "path";
 
 import ffmpeg from "fluent-ffmpeg";
 import createError from "http-errors";
-import tmp from "tmp";
 
 import { MESSAGES } from "../config/constants.js";
 import env from "../config/env.js";
@@ -15,66 +16,56 @@ const transVideoAndUpload = async ({
   email,
   selectedCharacter,
 }) => {
-  const originalVideo = `${env.ORIGINAL_PREFIX}/${videoId}.mp4`;
-  const fileName = `${email}${Date.now()}`;
+  const originalVideoName = `${videoId}.mp4`;
+  const originalVideoPath = `${env.ORIGINAL_PREFIX}/${originalVideoName}`;
+  const tempFilePath = path.join(tmpdir(), originalVideoName);
+  const outputFileName = `${email}${Date.now()}.mp4`;
+  const outputTempPath = path.join(tmpdir(), outputFileName);
 
-  const inputTmpPath = tmp.tmpNameSync({ postfix: ".mp4" });
-  const outputTmpPath = tmp.tmpNameSync({ postfix: ".mp4" });
+  try {
+    await bucket
+      .file(originalVideoPath)
+      .download({ destination: tempFilePath });
+  } catch {
+    throw createError.InternalServerError(MESSAGES.ERROR.FAILED_READ_VIDEO);
+  }
 
-  await new Promise((resolve, reject) => {
-    const readStream = bucket.file(originalVideo).createReadStream();
-    const inputWriteStream = fs.createWriteStream(inputTmpPath);
-
-    readStream.pipe(inputWriteStream);
-    inputWriteStream.on("finish", resolve);
-    inputWriteStream.on("error", () => {
-      reject(createError.InternalServerError(MESSAGES.ERROR.FAILED_READ_VIDEO));
-    });
-    readStream.on("error", () => {
-      reject(createError.InternalServerError(MESSAGES.ERROR.FAILED_READ_VIDEO));
-    });
-  });
-
-  await new Promise((resolve, reject) => {
-    ffmpeg(inputTmpPath)
-      .setStartTime(trimStart)
-      .setDuration(trimEnd - trimStart)
-      .output(outputTmpPath)
-      .on("end", resolve)
-      .on("error", () =>
-        reject(
-          createError.InternalServerError(MESSAGES.ERROR.FAILED_EDIT_VIDEO)
-        )
-      )
-      .run();
-  });
-
-  const writeStream = bucket
-    .file(`${env.EDITED_PREFIX}/${fileName}`)
-    .createWriteStream({
-      resumable: false,
-      metadata: { contentType: "video/mp4" },
+  try {
+    await new Promise((resolve, reject) => {
+      ffmpeg(tempFilePath)
+        .seekInput(trimStart)
+        .duration(trimEnd - trimStart)
+        .format("mp4")
+        .on("error", () => {
+          reject(
+            createError.InternalServerError(MESSAGES.ERROR.FAILED_EDIT_VIDEO)
+          );
+        })
+        .on("end", () => {
+          resolve();
+        })
+        .save(outputTempPath);
     });
 
-  await new Promise((resolve, reject) => {
-    fs.createReadStream(outputTmpPath)
-      .pipe(writeStream)
-      .on("finish", resolve)
-      .on("error", () =>
-        reject(
-          createError.InternalServerError(MESSAGES.ERROR.FAILED_SAVE_VIDEO)
-        )
-      );
-  });
+    try {
+      await bucket.upload(outputTempPath, {
+        destination: `${env.EDITED_PREFIX}/${outputFileName}`,
+      });
+    } catch {
+      throw createError.InternalServerError(MESSAGES.ERROR.FAILED_SAVE_VIDEO);
+    }
 
-  await fs.promises.unlink(inputTmpPath);
-  await fs.promises.unlink(outputTmpPath);
-
-  return {
-    email,
-    file_name: fileName,
-    selected_character: selectedCharacter,
-  };
+    return {
+      email,
+      file_name: outputFileName,
+      selected_character: selectedCharacter,
+    };
+  } catch (err) {
+    throw err;
+  } finally {
+    await unlink(tempFilePath);
+    await unlink(outputTempPath);
+  }
 };
 
 export default transVideoAndUpload;
