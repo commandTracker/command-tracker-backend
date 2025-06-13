@@ -1,3 +1,5 @@
+import { pipeline } from "stream/promises";
+
 import ytdl from "@nuclearplayer/ytdl-core";
 import createError from "http-errors";
 
@@ -7,7 +9,7 @@ import { storage, bucket } from "../config/gcs.js";
 import generateSignedUrl from "../utils/generateSignedUrl.js";
 
 const getYoutubeVideo = async (youtubeUrl) => {
-  const videoStream = ytdl(youtubeUrl, { quality: "highest" });
+  const videoStream = ytdl(youtubeUrl, { quality: "highestvideo" });
 
   return videoStream;
 };
@@ -16,18 +18,15 @@ const saveVideoToGcs = async (videoStream, videoId) => {
   const fileName = `${env.ORIGINAL_PREFIX}/${videoId}.mp4`;
   const file = bucket.file(fileName);
 
-  await new Promise((resolve, reject) => {
-    videoStream
-      .pipe(file.createWriteStream({ contentType: "video/mp4" }))
-      .on("finish", () => resolve())
-      .on("error", () => {
-        const error = new createError.InternalServerError(
-          MESSAGES.ERROR.FAILED_SAVE_VIDEO
-        );
+  try {
+    const writeStream = file.createWriteStream({
+      contentType: "video/mp4",
+    });
 
-        reject(error);
-      });
-  });
+    await pipeline(videoStream, writeStream);
+  } catch {
+    throw new createError.InternalServerError(MESSAGES.ERROR.FAILED_SAVE_VIDEO);
+  }
 
   return await generateSignedUrl(storage, fileName);
 };
