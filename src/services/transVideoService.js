@@ -1,3 +1,5 @@
+import { pipeline } from "node:stream/promises";
+
 import ffmpeg from "fluent-ffmpeg";
 import createError from "http-errors";
 
@@ -17,35 +19,24 @@ const transVideoAndUpload = async ({
 
   try {
     const stream = bucket.file(originalVideo).createReadStream();
-
-    await new Promise((resolve, reject) => {
-      const ffmpegProcess = ffmpeg(stream)
-        .seekInput(trimStart)
-        .duration(trimEnd - trimStart)
-        .format("webm")
-        .on("error", () => {
-          reject(
-            createError.InternalServerError(MESSAGES.ERROR.FAILED_EDIT_VIDEO)
-          );
-        });
-
-      const writeStream = bucket
-        .file(`${env.EDITED_PREFIX}/${outputFileName}`)
-        .createWriteStream({
-          metadata: { contentType: "video/webm" },
-        });
-
-      ffmpegProcess.pipe(writeStream, { end: true });
-
-      writeStream.on("finish", () => {
-        resolve(ffmpegProcess);
+    const ffmpegProcess = ffmpeg(stream)
+      .setStartTime(trimStart)
+      .duration(trimEnd - trimStart)
+      .format("webm")
+      .on("error", () => {
+        throw createError.InternalServerError(MESSAGES.ERROR.FAILED_EDIT_VIDEO);
       });
-      writeStream.on("error", () => {
-        reject(
-          createError.InternalServerError(MESSAGES.ERROR.FAILED_SAVE_VIDEO)
-        );
+    const writeStream = bucket
+      .file(`${env.EDITED_PREFIX}/${outputFileName}`)
+      .createWriteStream({
+        metadata: { contentType: "video/webm" },
       });
+
+    writeStream.on("error", () => {
+      throw createError.InternalServerError(MESSAGES.ERROR.FAILED_SAVE_VIDEO);
     });
+
+    await pipeline(ffmpegProcess, writeStream);
 
     return {
       email,
