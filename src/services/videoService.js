@@ -15,13 +15,11 @@ const getYoutubeVideo = async (youtubeUrl) => {
 };
 
 const saveVideoToGcs = async (videoStream, videoId) => {
-  const fileName = `${env.ORIGINAL_PREFIX}/${videoId}.mp4`;
+  const fileName = `${env.ORIGINAL_PREFIX}/${videoId}`;
   const file = bucket.file(fileName);
 
   try {
-    const writeStream = file.createWriteStream({
-      contentType: "video/mp4",
-    });
+    const writeStream = file.createWriteStream({ contentType: "video/webm" });
 
     await pipeline(videoStream, writeStream);
   } catch {

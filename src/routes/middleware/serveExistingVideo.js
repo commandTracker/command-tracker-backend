@@ -8,7 +8,7 @@ import generateSignedUrl from "../../utils/generateSignedUrl.js";
 const serveExistingVideo = async (req, res, next) => {
   const { youtubeUrl } = req.body;
   const videoId = ytdl.getURLVideoID(youtubeUrl);
-  const fileName = `${env.ORIGINAL_PREFIX}/${videoId}.mp4`;
+  const fileName = `${env.ORIGINAL_PREFIX}/${videoId}`;
   const file = bucket.file(fileName);
   const [exists] = await file.exists();
 

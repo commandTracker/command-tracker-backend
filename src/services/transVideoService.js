@@ -14,8 +14,8 @@ const transVideoAndUpload = async ({
   email,
   selectedCharacter,
 }) => {
-  const originalVideo = `${env.ORIGINAL_PREFIX}/${videoId}.mp4`;
-  const outputFileName = `${email}${Date.now()}.mp4`;
+  const originalVideo = `${env.ORIGINAL_PREFIX}/${videoId}`;
+  const outputFileName = `${email}${Date.now()}`;
 
   try {
     const stream = bucket.file(originalVideo).createReadStream();
