@@ -1,4 +1,4 @@
-import ytdl from "@nuclearplayer/ytdl-core";
+import ytdl from "@distube/ytdl-core";
 
 import { HTTP_STATUS, MESSAGES } from "../../config/constants.js";
 import env from "../../config/env.js";
