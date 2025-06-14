@@ -4,9 +4,7 @@ import ytdl from "@distube/ytdl-core";
 import createError from "http-errors";
 
 import { MESSAGES } from "../config/constants.js";
-import env from "../config/env.js";
-import { storage, bucket } from "../config/gcs.js";
-import generateSignedUrl from "../utils/generateSignedUrl.js";
+import { bucket } from "../config/gcs.js";
 
 const getYoutubeVideo = async (youtubeUrl) => {
   const videoStream = ytdl(youtubeUrl, { quality: "highestvideo" });
@@ -14,19 +12,20 @@ const getYoutubeVideo = async (youtubeUrl) => {
   return videoStream;
 };
 
-const saveVideoToGcs = async (videoStream, videoId) => {
-  const fileName = `${env.ORIGINAL_PREFIX}/${videoId}`;
-  const file = bucket.file(fileName);
-
+const saveVideoToGcs = async (videoStream, fileName) => {
   try {
-    const writeStream = file.createWriteStream({ contentType: "video/webm" });
+    const writeStream = bucket.file(fileName).createWriteStream({
+      metadata: { contentType: "video/webm" },
+    });
+
+    writeStream.on("error", () => {
+      throw createError.InternalServerError(MESSAGES.ERROR.FAILED_SAVE_VIDEO);
+    });
 
     await pipeline(videoStream, writeStream);
-  } catch {
-    throw new createError.InternalServerError(MESSAGES.ERROR.FAILED_SAVE_VIDEO);
+  } catch (error) {
+    throw error;
   }
-
-  return await generateSignedUrl(storage, fileName);
 };
 
 export { getYoutubeVideo, saveVideoToGcs };
