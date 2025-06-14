@@ -1,7 +1,3 @@
-import { unlink } from "fs/promises";
-import { tmpdir } from "os";
-import path from "path";
-
 import ffmpeg from "fluent-ffmpeg";
 import createError from "http-errors";
 
@@ -16,44 +12,40 @@ const transVideoAndUpload = async ({
   email,
   selectedCharacter,
 }) => {
-  const originalVideoName = `${videoId}.mp4`;
-  const originalVideoPath = `${env.ORIGINAL_PREFIX}/${originalVideoName}`;
-  const tempFilePath = path.join(tmpdir(), originalVideoName);
+  const originalVideo = `${env.ORIGINAL_PREFIX}/${videoId}.mp4`;
   const outputFileName = `${email}${Date.now()}.mp4`;
-  const outputTempPath = path.join(tmpdir(), outputFileName);
 
   try {
-    await bucket
-      .file(originalVideoPath)
-      .download({ destination: tempFilePath });
-  } catch {
-    throw createError.InternalServerError(MESSAGES.ERROR.FAILED_READ_VIDEO);
-  }
+    const stream = bucket.file(originalVideo).createReadStream();
 
-  try {
     await new Promise((resolve, reject) => {
-      ffmpeg(tempFilePath)
+      const ffmpegProcess = ffmpeg(stream)
         .seekInput(trimStart)
         .duration(trimEnd - trimStart)
-        .format("mp4")
+        .format("webm")
         .on("error", () => {
           reject(
             createError.InternalServerError(MESSAGES.ERROR.FAILED_EDIT_VIDEO)
           );
-        })
-        .on("end", () => {
-          resolve();
-        })
-        .save(outputTempPath);
-    });
+        });
 
-    try {
-      await bucket.upload(outputTempPath, {
-        destination: `${env.EDITED_PREFIX}/${outputFileName}`,
+      const writeStream = bucket
+        .file(`${env.EDITED_PREFIX}/${outputFileName}`)
+        .createWriteStream({
+          metadata: { contentType: "video/webm" },
+        });
+
+      ffmpegProcess.pipe(writeStream, { end: true });
+
+      writeStream.on("finish", () => {
+        resolve(ffmpegProcess);
       });
-    } catch {
-      throw createError.InternalServerError(MESSAGES.ERROR.FAILED_SAVE_VIDEO);
-    }
+      writeStream.on("error", () => {
+        reject(
+          createError.InternalServerError(MESSAGES.ERROR.FAILED_SAVE_VIDEO)
+        );
+      });
+    });
 
     return {
       email,
@@ -62,9 +54,6 @@ const transVideoAndUpload = async ({
     };
   } catch (err) {
     throw err;
-  } finally {
-    await unlink(tempFilePath);
-    await unlink(outputTempPath);
   }
 };
 
