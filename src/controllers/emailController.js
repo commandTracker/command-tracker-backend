@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 import { MESSAGES, HTTP_STATUS } from "../config/constants.js";
 
 const notifySubmissionSuccess = async (req, res, next) => {
