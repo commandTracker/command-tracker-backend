@@ -52,7 +52,7 @@ const sendEmail = async ({ email, message, url }) => {
     const mailOptions = {
       from: config.email_user,
       to: email,
-      subject: "Command Tracker ddd",
+      subject: "Command Tracker",
       html,
     };
 
