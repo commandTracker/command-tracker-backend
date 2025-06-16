@@ -7,10 +7,6 @@ import { sendEmail } from "../services/emailService.js";
 
 const publishToQueue = async (message) => {
   try {
-    if (!message) {
-      throw createError(MESSAGES.ERROR.MISSING_MESSAGE);
-    }
-
     const channel = getChannel();
     const success = channel.sendToQueue(
       env.analyzeQueue,
