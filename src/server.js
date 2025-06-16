@@ -1,5 +1,5 @@
 import app from "./app.js";
-import config from "./config/env.js";
+import env from "./config/env.js";
 import { connectRabbitMQ } from "./config/rabbitmq.js";
 import { consumeEmailQueue } from "./utils/rabbitmqService.js";
 
@@ -8,7 +8,7 @@ const startServer = async () => {
     await connectRabbitMQ();
     await consumeEmailQueue();
 
-    const { port } = config;
+    const { port } = env;
 
     app.listen(port, () => {});
   } catch (error) {

@@ -7,7 +7,7 @@ import createError from "http-errors";
 import nodemailer from "nodemailer";
 
 import { MESSAGES } from "../config/constants.js";
-import config from "../config/env.js";
+import env from "../config/env.js";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -15,8 +15,8 @@ const dirname = path.dirname(filename);
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: config.email_user,
-    pass: config.email_pass,
+    user: env.email_user,
+    pass: env.email_pass,
   },
 });
 
@@ -43,7 +43,7 @@ const sendEmail = async ({ email, message, url }) => {
   try {
     const html = await readEmailTemplate({ message, url });
     const mailOptions = {
-      from: config.email_user,
+      from: env.email_user,
       to: email,
       subject: "Command Tracker",
       html,
