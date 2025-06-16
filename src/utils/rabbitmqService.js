@@ -1,21 +1,19 @@
 import createError from "http-errors";
 
 import { MESSAGES } from "../config/constants.js";
+import env from "../config/env.js";
 import { getChannel } from "../config/rabbitmq.js";
 import { sendEmail } from "../services/emailService.js";
 
-const publishToQueue = async (queue, message) => {
+const publishToQueue = async (message) => {
   try {
-    if (!queue || !message) {
+    if (!message) {
       throw createError(MESSAGES.ERROR.MISSING_MESSAGE);
     }
 
     const channel = getChannel();
-
-    await channel.assertQueue(queue, { durable: true });
-
     const success = channel.sendToQueue(
-      queue,
+      env.analyzeQueue,
       Buffer.from(JSON.stringify(message)),
       {
         persistent: true,
@@ -33,13 +31,10 @@ const publishToQueue = async (queue, message) => {
 };
 
 const consumeEmailQueue = async () => {
-  const queue = "email_queue";
   try {
     const channel = getChannel();
 
-    await channel.assertQueue(queue, { durable: true });
-
-    channel.consume(queue, async (msg) => {
+    channel.consume(env.emailQueue, async (msg) => {
       if (!msg) {
         return;
       }
