@@ -6,16 +6,14 @@ import createError from "http-errors";
 import { HTTP_STATUS, MESSAGES } from "./config/constants.js";
 import env from "./config/env.js";
 import editRoutes from "./routes/editRoutes.js";
-import emailRoutes from "./routes/emailRoutes.js";
 import videoRoutes from "./routes/videoRoutes.js";
 
 const app = express();
-
+app.use("/images", express.static("public/images"));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(`${env.API_PREFIX}/`, emailRoutes);
 app.use(`${env.API_PREFIX}/video`, videoRoutes);
 app.use(`${env.API_PREFIX}/edit`, editRoutes);
 
