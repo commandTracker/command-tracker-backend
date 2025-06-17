@@ -10,6 +10,8 @@ const config = {
   rabbitmqUrl: process.env.RABBITMQ_URL,
   email_user: process.env.EMAIL_USER,
   email_pass: process.env.EMAIL_PASS,
+  emailQueue: process.env.EMAIL_QUEUE || "email_queue",
+  analyzeQueue: process.env.ANALYZE_QUEUE || "analyze_queue",
 };
 
 export default config;

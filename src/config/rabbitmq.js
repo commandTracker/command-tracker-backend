@@ -2,14 +2,14 @@ import amqp from "amqplib";
 import createError from "http-errors";
 
 import { HTTP_STATUS, MESSAGES } from "./constants.js";
-import config from "./env.js";
+import env from "./env.js";
 
 let connection = null;
 let channel = null;
 
 const connectRabbitMQ = async () => {
   try {
-    connection = await amqp.connect(config.rabbitmqUrl);
+    connection = await amqp.connect(env.rabbitmqUrl);
     channel = await connection.createChannel();
 
     connection.on("error", () => {
@@ -20,6 +20,11 @@ const connectRabbitMQ = async () => {
     connection.on("close", () => {
       setTimeout(connectRabbitMQ, 5000);
     });
+
+    const { analyzeQueue, emailQueue } = env;
+
+    await channel.assertQueue(analyzeQueue, { durable: true });
+    await channel.assertQueue(emailQueue, { durable: true });
   } catch {
     setTimeout(connectRabbitMQ, 5000);
   }
