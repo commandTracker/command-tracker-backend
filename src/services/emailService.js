@@ -7,8 +7,8 @@ import createError from "http-errors";
 import mjml2html from "mjml";
 import nodemailer from "nodemailer";
 
-import { MESSAGES } from "../config/constants.js";
-import config from "../config/env.js";
+import { MESSAGES, CODE } from "../config/constants.js";
+import env from "../config/env.js";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -16,14 +16,14 @@ const dirname = path.dirname(filename);
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: config.email_user,
-    pass: config.email_pass,
+    user: env.email_user,
+    pass: env.email_pass,
   },
 });
 
-const readEmailTemplate = async ({ message, url }) => {
+const readEmailTemplate = async ({ code, message, url }) => {
   try {
-    if (url === "") {
+    if (code === CODE.ERROR.FAILED_ANALYZE) {
       const filePath = path.join(dirname, "../views", "errorTemplate.mjml.ejs");
       const template = await fs.readFile(filePath, "utf-8");
       const htmlContent = ejs.render(template, { message });
@@ -46,11 +46,11 @@ const readEmailTemplate = async ({ message, url }) => {
   }
 };
 
-const sendEmail = async ({ email, message, url }) => {
+const sendEmail = async ({ email, code, message, url }) => {
   try {
-    const html = await readEmailTemplate({ message, url });
+    const html = await readEmailTemplate({ code, message, url });
     const mailOptions = {
-      from: config.email_user,
+      from: env.email_user,
       to: email,
       subject: "Command Tracker",
       html,
