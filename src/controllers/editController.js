@@ -14,18 +14,17 @@ const editController = async (req, res, next) => {
       trimEnd,
       email,
     });
-    const outputFileName = `${env.EDITED_PREFIX}/${email}${Date.now()}}`;
+    const outputFileName = `${env.EDITED_PREFIX}/${email}${Date.now()}`;
 
     await saveVideoToGcs(trimedStream, outputFileName);
 
-    const queue = "analyze_queue";
     const message = {
       email,
       file_name: outputFileName,
       selected_character: selectedCharacter,
     };
 
-    await publishToQueue(queue, message);
+    await publishToQueue(message);
 
     res.status(HTTP_STATUS.CREATED).json({
       status: HTTP_STATUS.CREATED,
