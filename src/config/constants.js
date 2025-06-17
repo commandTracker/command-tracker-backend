@@ -28,6 +28,15 @@ const MESSAGES = {
   },
 };
 
+const CODE = {
+  SUCCESS: {
+    SUCCESS_ANALYZE: "SUCCESS_ANALYZE",
+  },
+  ERROR: {
+    FAILED_ANALYZE: "FAILED_ANALYZE",
+  },
+};
+
 const HTTP_STATUS = {
   OK: 200,
   CREATED: 201,
@@ -52,4 +61,4 @@ const REGEX_PATTERNS = {
   EMAIL: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i,
 };
 
-export { MESSAGES, HTTP_STATUS, GCS, REQUIRED_FIELDS, REGEX_PATTERNS };
+export { MESSAGES, HTTP_STATUS, GCS, REQUIRED_FIELDS, REGEX_PATTERNS, CODE };

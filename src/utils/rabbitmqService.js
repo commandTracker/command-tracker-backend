@@ -35,10 +35,10 @@ const consumeEmailQueue = async () => {
         return;
       }
 
-      const { email, message, url } = JSON.parse(msg.content.toString());
+      const { email, code, message, url } = JSON.parse(msg.content.toString());
 
       try {
-        await sendEmail({ email, message, url });
+        await sendEmail({ email, code, message, url });
         channel.ack(msg);
       } catch {
         channel.nack(msg, false, false);
