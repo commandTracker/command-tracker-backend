@@ -4,7 +4,7 @@ import env from "./env.js";
 
 const storage = new Storage({
   projectId: env.googleProjectId,
-  keyFilename: env.keyFileName,
+  credentials: JSON.parse(env.keyData),
 });
 
 const bucket = storage.bucket(env.bucketName);
