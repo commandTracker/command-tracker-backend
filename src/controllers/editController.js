@@ -2,6 +2,7 @@ import { HTTP_STATUS, MESSAGES } from "../config/constants.js";
 import trimVideo from "../services/trimVideo.js";
 import { saveVideoToGcs } from "../services/videoService.js";
 import { publishToQueue } from "../utils/rabbitmqService.js";
+import env from "../config/env.js";
 
 const editController = async (req, res, next) => {
   const { videoId, trimStart, trimEnd, email, selectedCharacter } = req.body;
@@ -13,13 +14,14 @@ const editController = async (req, res, next) => {
       trimEnd,
       email,
     });
-    const outputFileName = `${email}${Date.now()}`;
+    const filename = `${email}${Date.now()}`;
+    const outputFileName = `${env.EDITED_PREFIX}/${filename}`;
 
     await saveVideoToGcs(trimedStream, outputFileName);
 
     const message = {
       email,
-      file_name: outputFileName,
+      file_name: filename,
       selected_character: selectedCharacter,
     };
 
